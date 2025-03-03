@@ -1,4 +1,3 @@
-// Fichier: server.js
 const WebSocket = require('ws');
 const http = require('http');
 const express = require('express');
@@ -12,78 +11,106 @@ app.get('/', (req, res) => {
 });
 
 const wss = new WebSocket.Server({ server });
-const clients = new Map();
+const clients = new Map(); // Pour stocker les clients connectés
+const messageHistory = []; // Pour stocker l'historique des messages
 
+// Gérer les connexions WebSocket
 wss.on('connection', (ws) => {
   console.log('Nouveau client connecté');
 
-  const clientId = generateUniqueId();
-  let username = 'Anonyme';
+  let username = null;
 
-  clients.set(clientId, { ws, username });
-
+  // Attendre que l'utilisateur envoie son nom d'utilisateur
   ws.on('message', (message) => {
     try {
       const data = JSON.parse(message);
 
-      switch (data.type) {
-        case 'join':
-          username = data.username || 'Anonyme';
-          clients.get(clientId).username = username;
+      if (data.type === 'join') {
+        // Vérifier si le nom d'utilisateur est fourni
+        if (!data.username || data.username.trim() === '') {
+          ws.send(JSON.stringify({
+            type: 'error',
+            message: 'Le nom d\'utilisateur est requis',
+          }));
+          return;
+        }
 
-          broadcastMessage({
-            username: 'Système',
-            message: `${username} a rejoint le chat`,
-          }, clientId);
+        // Vérifier si le nom d'utilisateur est déjà utilisé
+        if (Array.from(clients.values()).some(client => client.username === data.username)) {
+          ws.send(JSON.stringify({
+            type: 'error',
+            message: 'Ce nom d\'utilisateur est déjà pris',
+          }));
+          return;
+        }
 
-          console.log(`Utilisateur connecté: ${username}`);
-          break;
+        // Enregistrer l'utilisateur
+        username = data.username.trim();
+        clients.set(ws, { username });
 
-        case 'message':
-          broadcastMessage({
-            username: data.username,
-            message: data.message,
-          }, clientId);
+        // Envoyer l'historique des messages au nouvel utilisateur
+        ws.send(JSON.stringify({
+          type: 'history',
+          messages: messageHistory,
+        }));
 
-          console.log(`Message de ${data.username}: ${data.message}`);
-          break;
+        // Annoncer la connexion à tous les clients
+        broadcastMessage({
+          type: 'system',
+          username: 'Système',
+          message: `${username} a rejoint le chat`,
+        }, ws);
 
-        default:
-          console.log('Type de message inconnu:', data);
+        console.log(`Utilisateur connecté: ${username}`);
+      } else if (data.type === 'message' && username) {
+        // Ajouter le message à l'historique
+        const messageData = {
+          username: data.username,
+          message: data.message,
+          timestamp: new Date().toISOString(),
+        };
+        messageHistory.push(messageData);
+
+        // Diffuser le message à tous les clients
+        broadcastMessage({
+          type: 'message',
+          ...messageData,
+        });
       }
     } catch (error) {
       console.error('Erreur de traitement du message:', error);
     }
   });
 
+  // Gérer la déconnexion
   ws.on('close', () => {
-    const client = clients.get(clientId);
-    if (client) {
+    if (username) {
+      // Annoncer la déconnexion à tous les clients
       broadcastMessage({
+        type: 'system',
         username: 'Système',
-        message: `${client.username} a quitté le chat`,
+        message: `${username} a quitté le chat`,
       });
 
-      clients.delete(clientId);
-      console.log(`Client déconnecté: ${client.username}`);
+      // Supprimer le client de la liste
+      clients.delete(ws);
+      console.log(`Client déconnecté: ${username}`);
     }
   });
 });
 
-function generateUniqueId() {
-  return Math.random().toString(36).substring(2, 10);
-}
-
-function broadcastMessage(data, excludeClientId = null) {
+// Fonction pour diffuser un message à tous les clients (sauf un client spécifique)
+function broadcastMessage(data, excludeClient = null) {
   const message = JSON.stringify(data);
 
-  clients.forEach((client, clientId) => {
-    if (clientId !== excludeClientId && client.ws.readyState === WebSocket.OPEN) {
-      client.ws.send(message);
+  clients.forEach((client, ws) => {
+    if (ws !== excludeClient && ws.readyState === WebSocket.OPEN) {
+      ws.send(message);
     }
   });
 }
 
+// Démarrer le serveur
 server.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
