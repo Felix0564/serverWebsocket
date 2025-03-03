@@ -24,7 +24,7 @@ const wss = new WebSocket.Server({ server });
 const clients = new Map();
 
 // Stockage des messages (en mémoire)
-const messageHistory = [];
+let messageHistory = [];
 const MAX_HISTORY_SIZE = 100; // Limiter pour éviter une consommation excessive de mémoire
 
 // Fichier pour sauvegarder l'historique des messages
@@ -36,11 +36,12 @@ function loadMessageHistory() {
     if (fs.existsSync(HISTORY_FILE)) {
       const data = fs.readFileSync(HISTORY_FILE, 'utf8');
       const parsed = JSON.parse(data);
-      messageHistory.push(...parsed);
+      messageHistory = parsed; // Remplacer l'historique au lieu d'ajouter
       console.log(`Historique des messages chargé (${parsed.length} messages)`);
     }
   } catch (error) {
     console.error('Erreur lors du chargement de l\'historique des messages:', error);
+    messageHistory = []; // Réinitialiser en cas d'erreur
   }
 }
 
@@ -72,21 +73,17 @@ wss.on('connection', (ws) => {
     isAlive: true
   });
 
-  // Envoyer l'historique des messages au nouveau client
-  if (messageHistory.length > 0) {
-    ws.send(JSON.stringify({
-      type: 'history',
-      messages: messageHistory
-    }));
-  }
-
-  // Ping pour maintenir la connexion active
+  // Configuration d'un gestionnaire ping pour cette connexion
+  ws.isAlive = true;
   ws.on('pong', () => {
-    const client = clients.get(clientId);
-    if (client) {
-      client.isAlive = true;
-    }
+    ws.isAlive = true;
   });
+
+  // Envoyer l'historique des messages au nouveau client
+  ws.send(JSON.stringify({
+    type: 'history',
+    messages: messageHistory
+  }));
 
   // Gérer les messages du client
   ws.on('message', (message) => {
@@ -99,13 +96,19 @@ wss.on('connection', (ws) => {
           username = data.username || 'Anonyme';
           clients.get(clientId).username = username;
           
-          // Annoncer la connexion à tous les clients sauf l'expéditeur
-          broadcastMessage({
+          // Message système pour la connexion
+          const joinMessage = {
             type: 'system',
             username: 'Système',
             message: `${username} a rejoint le chat`,
             timestamp: new Date().toISOString()
-          }, clientId);
+          };
+          
+          // Ajouter à l'historique
+          addToMessageHistory(joinMessage);
+          
+          // Diffuser à tous SAUF l'expéditeur
+          broadcastMessage(joinMessage, ws);
           
           console.log(`Utilisateur connecté: ${username}`);
           break;
@@ -123,9 +126,14 @@ wss.on('connection', (ws) => {
           addToMessageHistory(messageObj);
           
           // Diffuser le message à tous les clients SAUF l'expéditeur
-          broadcastMessage(messageObj, clientId);
+          broadcastMessage(messageObj, ws);
           
           console.log(`Message de ${data.username}: ${data.message}`);
+          break;
+          
+        case 'disconnect':
+          // Message système pour la déconnexion volontaire
+          handleDisconnection(clientId, ws, true);
           break;
           
         default:
@@ -138,22 +146,38 @@ wss.on('connection', (ws) => {
 
   // Gérer la déconnexion
   ws.on('close', () => {
-    const client = clients.get(clientId);
-    if (client) {
-      // Annoncer la déconnexion
-      broadcastMessage({
-        type: 'system',
-        username: 'Système',
-        message: `${client.username} a quitté le chat`,
-        timestamp: new Date().toISOString()
-      }, clientId);
-      
-      // Supprimer le client de la liste
-      clients.delete(clientId);
-      console.log(`Client déconnecté: ${client.username}`);
-    }
+    handleDisconnection(clientId, ws, false);
   });
 });
+
+// Gérer la déconnexion d'un client
+function handleDisconnection(clientId, ws, isVoluntary) {
+  const client = clients.get(clientId);
+  if (client) {
+    // Créer le message de déconnexion
+    const disconnectMessage = {
+      type: 'system',
+      username: 'Système',
+      message: `${client.username} a quitté le chat`,
+      timestamp: new Date().toISOString()
+    };
+    
+    // Ajouter à l'historique
+    addToMessageHistory(disconnectMessage);
+    
+    // Diffuser à tous SAUF celui qui se déconnecte
+    broadcastMessage(disconnectMessage, ws);
+    
+    // Supprimer le client de la liste
+    clients.delete(clientId);
+    console.log(`Client déconnecté: ${client.username} (${isVoluntary ? 'volontaire' : 'involontaire'})`);
+    
+    // Fermer proprement la connexion si déconnexion volontaire
+    if (isVoluntary && ws.readyState === WebSocket.OPEN) {
+      ws.close();
+    }
+  }
+}
 
 // Ajouter un message à l'historique
 function addToMessageHistory(message) {
@@ -176,31 +200,26 @@ function generateUniqueId() {
 }
 
 // Fonction pour diffuser un message à tous les clients sauf l'expéditeur
-function broadcastMessage(data, excludeClientId = null) {
+function broadcastMessage(data, senderWs) {
   const message = JSON.stringify(data);
   
-  clients.forEach((client, id) => {
+  wss.clients.forEach((client) => {
     // Ne pas envoyer le message à l'expéditeur
-    if (id !== excludeClientId && client.ws.readyState === WebSocket.OPEN) {
-      client.ws.send(message);
+    if (client !== senderWs && client.readyState === WebSocket.OPEN) {
+      client.send(message);
     }
   });
 }
 
 // Vérification périodique des connexions
 const interval = setInterval(() => {
-  clients.forEach((client, id) => {
-    if (client.isAlive === false) {
-      // Client non-répondant, fermer la connexion
-      client.ws.terminate();
-      clients.delete(id);
-      console.log(`Connexion terminée pour le client ${client.username} (non-répondant)`);
-      return;
+  wss.clients.forEach((ws) => {
+    if (ws.isAlive === false) {
+      return ws.terminate();
     }
     
-    // Marquer comme non-répondant jusqu'à réception d'un pong
-    client.isAlive = false;
-    client.ws.ping();
+    ws.isAlive = false;
+    ws.ping();
   });
 }, 30000); // Vérifier toutes les 30 secondes
 
