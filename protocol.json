@@ -1,0 +1,119 @@
+{
+    "VERSION": "1.0",
+    "USER_MESSAGES": {
+      "CONNECT": {
+        "type": "USER_CONNECT",
+        "required": ["mobile"],
+        "format": {
+          "mobile": "string",
+          "username": "string"
+        }
+      },
+      "CREATE_ROOM": {
+        "type": "USER_CREATE_ROOM",
+        "required": ["mobile", "participants"],
+        "format": {
+          "mobile": "string",
+          "username": "string",
+          "urlImage": "string",
+          "participants": "array"
+        }
+      },
+      "JOIN_ROOM": {
+        "type": "USER_JOIN_ROOM",
+        "required": ["roomId", "mobile"],
+        "format": {
+          "roomId": "string",
+          "username": "string",
+          "mobile": "string"
+        }
+      },
+      "MESSAGE": {
+        "type": "USER_MESSAGE",
+        "required": ["roomId", "message"],
+        "format": {
+          "roomId": "string",
+          "message": "string",
+          "username": "string",
+          "mobile": "string"
+        }
+      },
+      "LEAVE_ROOM": {
+        "type": "USER_LEAVE_ROOM",
+        "required": ["roomId"],
+        "format": {
+          "roomId": "string"
+        }
+      },
+      "GET_ROOMS": {
+        "type": "USER_GET_ROOMS",
+        "required": ["mobile"],
+        "format": {
+          "mobile": "string"
+        }
+      },
+      "ADD_PARTICIPANTS": {
+        "type": "USER_ADD_PARTICIPANTS",
+        "required": ["roomId", "mobile", "newParticipants"],
+        "format": {
+          "roomId": "string",
+          "mobile": "string",
+          "newParticipants": "array"
+        }
+      }
+    },
+
+    "SYSTEM_MESSAGES": {
+      "ERROR": {
+        "type": "SYS_ERROR",
+        "format": {
+          "code": "string",
+          "message": "string"
+        }
+      },
+      "ROOM_CREATED": {
+        "type": "SYS_ROOM_CREATED",
+        "format": {
+          "roomId": "string",
+          "room": "object"
+        }
+      },
+      "NEW_ROOM": {
+        "type": "SYS_NEW_ROOM_AVAILABLE",
+        "format": {
+          "room": "object"
+        }
+      },
+      "MESSAGE_NOTIFICATION": {
+        "type": "SYS_NEW_MESSAGE",
+        "format": {
+          "roomId": "string",
+          "message": {
+            "username": "string",
+            "preview": "string",
+            "timestamp": "string"
+          }
+        }
+      },
+      "ROOMS_LIST": {
+        "type": "SYS_ROOMS_LIST",
+        "format": {
+          "rooms": "array"
+        }
+      },
+      "NOTIFICATION": {
+        "type": "SYS_NOTIFICATION",
+        "format": {
+          "roomId": "string",
+          "message": "string"
+        }
+      }
+    },
+    "ERROR_CODES": {
+      "INVALID_MESSAGE": "ERR_001",
+      "ROOM_NOT_FOUND": "ERR_002",
+      "ACCESS_DENIED": "ERR_003",
+      "INVALID_MOBILE": "ERR_004",
+      "CONNECTION_ERROR": "ERR_005"
+    }
+  }

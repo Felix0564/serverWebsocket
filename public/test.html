@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test WebSocket</title>
+</head>
+<body>
+    <h1>Test de connexion WebSocket</h1>
+    <div>
+        <button id="connectBtn">Connecter</button>
+        <button id="sendBtn" disabled>Envoyer message test</button>
+    </div>
+    <div id="status" style="margin-top: 20px; padding: 10px; background-color: #f0f0f0;"></div>
+    <div id="messages" style="margin-top: 20px; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;"></div>
+
+    <script>
+        const status = document.getElementById('status');
+        const messages = document.getElementById('messages');
+        const connectBtn = document.getElementById('connectBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        let socket = null;
+        
+        function log(message, isError = false) {
+            const div = document.createElement('div');
+            div.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            if (isError) {
+                div.style.color = 'red';
+            }
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+        
+        connectBtn.addEventListener('click', () => {
+            status.textContent = 'Connexion en cours...';
+            
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//localhost:8080`;
+            
+            log(`Tentative de connexion à ${wsUrl}`);
+            
+            socket = new WebSocket(wsUrl);
+            
+            socket.onopen = () => {
+                status.textContent = 'Connecté!';
+                status.style.backgroundColor = '#d4edda';
+                log('Connexion établie');
+                sendBtn.disabled = false;
+                connectBtn.disabled = true;
+            };
+            
+            socket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    log(`Message reçu: ${JSON.stringify(data)}`);
+                } catch (e) {
+                    log(`Message reçu (non-JSON): ${event.data}`);
+                }
+            };
+            
+            socket.onclose = () => {
+                status.textContent = 'Déconnecté';
+                status.style.backgroundColor = '#f8d7da';
+                log('Connexion fermée', true);
+                sendBtn.disabled = true;
+                connectBtn.disabled = false;
+            };
+            
+            socket.onerror = (error) => {
+                status.textContent = 'Erreur de connexion';
+                status.style.backgroundColor = '#f8d7da';
+                log(`Erreur: ${error}`, true);
+            };
+        });
+        
+        sendBtn.addEventListener('click', () => {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                const testMessage = {
+                    type: 'USER_CONNECT',
+                    mobile: '0123456789',
+                    username: 'TestUser'
+                };
+                
+                log(`Envoi: ${JSON.stringify(testMessage)}`);
+                socket.send(JSON.stringify(testMessage));
+            } else {
+                log('Socket non connecté', true);
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "system",
+    "roomId": "0e12c93e-1f24-4840-803b-75bb4bd7bd20+7+62c6baae-1832-463e-bf45-e669a5b05ce2+20250310T000508323Z",
+    "username": "Système",
+    "message": "h a rejoint le chat",
+    "timestamp": "2025-03-10T00:05:08.346Z"
+  },
+  {
+    "type": "system",
+    "roomId": "0e12c93e-1f24-4840-803b-75bb4bd7bd20+7+62c6baae-1832-463e-bf45-e669a5b05ce2+20250310T000508323Z",
+    "username": "Système",
+    "message": "Anonyme a rejoint le chat",
+    "timestamp": "2025-03-10T00:08:33.666Z"
+  }
+]

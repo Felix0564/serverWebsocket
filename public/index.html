@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test du Chat en Temps Réel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+        }
+        .chat-container {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .user-message {
+            background-color: #e6f7ff;
+            margin-left: 20px;
+        }
+        .system-message {
+            background-color: #f0f0f0;
+            font-style: italic;
+        }
+        .other-message {
+            background-color: #f9f9f9;
+            margin-right: 20px;
+        }
+        .message-form {
+            display: flex;
+            gap: 10px;
+        }
+        .message-input {
+            flex: 1;
+            padding: 8px;
+        }
+        .room-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .room-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            border: 1px solid #eee;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .room-item:hover {
+            background-color: #f5f5f5;
+        }
+        .active-room {
+            background-color: #e6f7ff;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, button {
+            padding: 8px;
+        }
+        button {
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .tab-content {
+            display: none;
+            border: 1px solid #ccc;
+            border-radius: 0 5px 5px 5px;
+            padding: 15px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+    <audio id="notificationSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3" preload="auto"></audio>
+</head>
+<body>
+    <h1>Test du Chat en Temps Réel</h1>
+    
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <div class="panel">
+            <h2>Connexion</h2>
+            <div class="form-group">
+                <label for="mobile">Mobile:</label>
+                <input type="text" id="mobile" placeholder="Entrez votre numéro mobile">
+            </div>
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur:</label>
+                <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur">
+            </div>
+            <button id="connectBtn">Se connecter</button>
+            <button id="debugBtn" style="background-color: #ff9800; margin-left: 10px;">Déboguer</button>
+            
+            <hr>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="create-room">Créer une salle</div>
+                <div class="tab" data-tab="rooms-list">Salles disponibles</div>
+            </div>
+            
+            <div class="tab-content active" id="create-room">
+                <h3>Créer une nouvelle salle</h3>
+                <div class="form-group">
+                    <label for="participants">Participants (séparés par des virgules):</label>
+                    <input type="text" id="participants" placeholder="mobile1,mobile2,mobile3,...">
+                    <small style="display: block; margin-top: 5px; color: #666;">
+                        Entrez les numéros mobiles des participants séparés par des virgules.
+                        Chaque participant pourra accéder à la salle en se connectant avec son numéro.
+                    </small>
+                </div>
+                <button id="createRoomBtn" disabled>Créer une salle</button>
+            </div>
+            
+            <div class="tab-content" id="rooms-list">
+                <h3>Salles disponibles</h3>
+                <div class="room-list" id="roomsList"></div>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <h2 id="currentRoomTitle">Pas de salle sélectionnée</h2>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="message-form">
+                <input type="text" id="messageInput" class="message-input" placeholder="Entrez votre message..." disabled>
+                <button id="sendBtn" disabled>Envoyer</button>
+                <button id="leaveRoomBtn" disabled>Quitter la salle</button>
+                <button id="addParticipantsBtn" disabled>Ajouter participants</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ajouter la modal pour l'ajout de participants -->
+    <div id="addParticipantsModal" class="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px;">
+            <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+            <h2>Ajouter des participants</h2>
+            <div class="form-group">
+                <label for="newParticipants">Nouveaux participants (séparés par des virgules):</label>
+                <input type="text" id="newParticipants" placeholder="mobile1,mobile2,mobile3,...">
+                <small style="display: block; margin-top: 5px; color: #666;">
+                    Entrez les numéros mobiles des participants séparés par des virgules.
+                </small>
+            </div>
+            <button id="confirmAddParticipantsBtn">Ajouter</button>
+        </div>
+    </div>
+    
+    <script>
+        // Variables globales
+        let socket;
+        let currentUser = {
+            mobile: null,
+            username: null,
+            userId: null  // Sera défini par le serveur
+        };
+        let currentRoom = null;
+        
+        // Éléments DOM
+        const connectBtn = document.getElementById('connectBtn');
+        const createRoomBtn = document.getElementById('createRoomBtn');
+        const sendBtn = document.getElementById('sendBtn');
+        const leaveRoomBtn = document.getElementById('leaveRoomBtn');
+        const mobileInput = document.getElementById('mobile');
+        const usernameInput = document.getElementById('username');
+        const participantsInput = document.getElementById('participants');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const roomsList = document.getElementById('roomsList');
+        const currentRoomTitle = document.getElementById('currentRoomTitle');
+        const notification = document.getElementById('notification');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const debugBtn = document.getElementById('debugBtn');
+        const addParticipantsBtn = document.getElementById('addParticipantsBtn');
+        const addParticipantsModal = document.getElementById('addParticipantsModal');
+        const newParticipantsInput = document.getElementById('newParticipants');
+        const confirmAddParticipantsBtn = document.getElementById('confirmAddParticipantsBtn');
+        const closeModalBtn = document.querySelector('.close');
+        
+        // Gestion des onglets
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Fonction pour se connecter au serveur WebSocket
+        function connectToServer() {
+            const mobile = mobileInput.value.trim();
+            const username = usernameInput.value.trim() || 'Anonyme';
+            
+            if (!mobile) {
+                showNotification('Veuillez entrer un numéro mobile', 'error');
+                return;
+            }
+            
+            // Stocker les informations utilisateur
+            currentUser.mobile = mobile;
+            currentUser.username = username;
+            
+            // Créer la connexion WebSocket
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//localhost:8080`;
+            console.log('Tentative de connexion à:', wsUrl);
+            
+            socket = new WebSocket(wsUrl);
+            
+            socket.onopen = () => {
+                console.log('Connecté au serveur WebSocket');
+                
+                // Envoyer le message de connexion
+                sendToServer({
+                    type: 'USER_CONNECT',
+                    mobile: currentUser.mobile,
+                    username: currentUser.username
+                });
+                
+                // Activer les boutons
+                createRoomBtn.disabled = false;
+                connectBtn.disabled = true;
+                mobileInput.disabled = true;
+                usernameInput.disabled = true;
+                
+                showNotification('Connecté au serveur de chat', 'success');
+            };
+            
+            socket.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                console.log('Message reçu:', data);
+                
+                handleServerMessage(data);
+            };
+            
+            socket.onclose = () => {
+                console.log('Déconnecté du serveur WebSocket');
+                showNotification('Déconnecté du serveur', 'error');
+                
+                // Désactiver les boutons
+                createRoomBtn.disabled = true;
+                connectBtn.disabled = false;
+                sendBtn.disabled = true;
+                leaveRoomBtn.disabled = true;
+                messageInput.disabled = true;
+                mobileInput.disabled = false;
+                usernameInput.disabled = false;
+            };
+            
+            socket.onerror = (error) => {
+                console.error('Erreur WebSocket:', error);
+                showNotification('Erreur de connexion', 'error');
+            };
+        }
+        
+        // Fonction pour envoyer un message au serveur
+        function sendToServer(message) {
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                console.log('Envoi au serveur:', message);
+                socket.send(JSON.stringify(message));
+            } else {
+                console.error('Impossible d\'envoyer le message, socket non connecté:', socket ? socket.readyState : 'null');
+                showNotification('Non connecté au serveur', 'error');
+            }
+        }
+        
+        // Fonction pour gérer les messages du serveur
+        function handleServerMessage(data) {
+            switch (data.type) {
+                case 'SYS_NOTIFICATION':
+                    if (data.userId) {
+                        currentUser.userId = data.userId;
+                        console.log('ID utilisateur reçu:', data.userId);
+                    }
+                    showNotification(data.message, 'info');
+                    break;
+                    
+                case 'SYS_ERROR':
+                    console.error('Erreur serveur:', data);
+                    showNotification(`Erreur: ${data.message} (${data.code})`, 'error');
+                    break;
+                    
+                case 'SYS_ROOMS_LIST':
+                    updateRoomsList(data.rooms);
+                    break;
+                    
+                case 'SYS_ROOM_CREATED':
+                    currentRoom = data.roomId;
+                    joinRoom(data.roomId);
+                    showNotification('Salle créée avec succès', 'success');
+                    break;
+                    
+                case 'SYS_NEW_ROOM_AVAILABLE':
+                    showNotification(`Nouvelle salle disponible: ${data.room.label}`, 'info');
+                    // Mettre à jour la liste des salles si on reçoit une notification de nouvelle salle
+                    sendToServer({
+                        type: 'USER_GET_ROOMS',
+                        mobile: currentUser.mobile
+                    });
+                    break;
+                    
+                case 'SYS_NEW_MESSAGE':
+                    // Notification de nouveau message dans une autre salle
+                    if (data.roomId !== currentRoom) {
+                        showNotification(`Nouveau message de ${data.message.username} dans une autre salle`, 'info');
+                        // Jouer un son de notification
+                        document.getElementById('notificationSound').play().catch(e => console.log('Impossible de jouer le son:', e));
+                    }
+                    break;
+                    
+                case 'message':
+                    // Message normal dans la salle actuelle
+                    addMessageToChat(data);
+                    break;
+                    
+                case 'system':
+                    // Message système dans la salle actuelle
+                    addMessageToChat(data, true);
+                    break;
+                    
+                case 'history':
+                    // Historique des messages
+                    chatMessages.innerHTML = '';
+                    data.messages.forEach(msg => {
+                        addMessageToChat(msg, msg.type === 'system');
+                    });
+                    break;
+            }
+        }
+        
+        // Fonction pour mettre à jour la liste des salles
+        function updateRoomsList(rooms) {
+            roomsList.innerHTML = '';
+            
+            if (rooms.length === 0) {
+                roomsList.innerHTML = '<p>Aucune salle disponible</p>';
+                return;
+            }
+            
+            rooms.forEach(room => {
+                const roomElement = document.createElement('div');
+                roomElement.className = 'room-item';
+                if (currentRoom === room.keyName) {
+                    roomElement.classList.add('active-room');
+                }
+                
+                roomElement.innerHTML = `
+                    <strong>${room.label}</strong>
+                    <p>Participants: ${room.participantsCount}</p>
+                    <p>Date: ${new Date(room.dateOpen).toLocaleString()}</p>
+                `;
+                
+                roomElement.addEventListener('click', () => {
+                    joinRoom(room.keyName);
+                });
+                
+                roomsList.appendChild(roomElement);
+            });
+        }
+        
+        // Fonction pour rejoindre une salle
+        function joinRoom(roomId) {
+            if (!roomId) {
+                showNotification('ID de salle invalide', 'error');
+                return;
+            }
+            
+            console.log(`Tentative de rejoindre la salle: ${roomId}`);
+            
+            sendToServer({
+                type: 'USER_JOIN_ROOM',
+                roomId: roomId,
+                username: currentUser.username,
+                mobile: currentUser.mobile
+            });
+            
+            currentRoom = roomId;
+            currentRoomTitle.textContent = `Salle: ${roomId}`;
+            
+            // Activer les contrôles de chat
+            messageInput.disabled = false;
+            sendBtn.disabled = false;
+            leaveRoomBtn.disabled = false;
+            addParticipantsBtn.disabled = false;
+            
+            // Mettre à jour l'interface
+            chatMessages.innerHTML = '';
+            messageInput.focus();
+            
+            // Mettre à jour la liste des salles pour montrer la salle active
+            sendToServer({
+                type: 'USER_GET_ROOMS',
+                mobile: currentUser.mobile
+            });
+        }
+        
+        // Fonction pour quitter une salle
+        function leaveRoom() {
+            if (currentRoom) {
+                sendToServer({
+                    type: 'USER_LEAVE_ROOM',
+                    roomId: currentRoom
+                });
+                
+                currentRoom = null;
+                currentRoomTitle.textContent = 'Pas de salle sélectionnée';
+                
+                // Désactiver les contrôles de chat
+                messageInput.disabled = true;
+                sendBtn.disabled = true;
+                leaveRoomBtn.disabled = true;
+                addParticipantsBtn.disabled = true;
+                
+                // Effacer les messages
+                chatMessages.innerHTML = '';
+                
+                // Mettre à jour la liste des salles
+                sendToServer({
+                    type: 'USER_GET_ROOMS',
+                    mobile: currentUser.mobile
+                });
+            }
+        }
+        
+        // Fonction pour ajouter un message au chat
+        function addMessageToChat(message, isSystem = false) {
+            const messageElement = document.createElement('div');
+            
+            if (isSystem) {
+                messageElement.className = 'message system-message';
+                messageElement.textContent = message.message;
+            } else {
+                if (message.username === currentUser.username) {
+                    messageElement.className = 'message user-message';
+                } else {
+                    messageElement.className = 'message other-message';
+                }
+                
+                messageElement.innerHTML = `
+                    <strong>${message.username}</strong> 
+                    <span style="font-size: 0.8em; color: #888;">${new Date(message.timestamp).toLocaleTimeString()}</span>
+                    <p>${message.message}</p>
+                `;
+            }
+            
+            chatMessages.appendChild(messageElement);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Fonction pour créer une salle
+        function createRoom() {
+            const participantsText = participantsInput.value.trim();
+            
+            // Analyser les participants (format: mobile1,nom1,mobile2,nom2,...)
+            const participants = [];
+            if (participantsText) {
+                const parts = participantsText.split(',');
+                
+                // Vérifions si le format est correct
+                console.log("Parts:", parts);
+                
+                // Modification importante ici: nous allons considérer chaque valeur comme un mobile
+                // et générer automatiquement un nom pour chaque mobile
+                for (let i = 0; i < parts.length; i++) {
+                    const mobile = parts[i].trim();
+                    
+                    if (!mobile) {
+                        showNotification('Numéro mobile manquant pour un participant', 'error');
+                        return;
+                    }
+                    
+                    // Générer un nom par défaut si non fourni
+                    const name = `Utilisateur ${mobile}`;
+                    
+                    console.log(`Ajout du participant: mobile=${mobile}, name=${name}`);
+                    
+                    participants.push({
+                        mobile: mobile,
+                        name: name,
+                        urlImage: ''
+                    });
+                }
+            }
+            
+            console.log("Participants à envoyer:", participants);
+            
+            sendToServer({
+                type: 'USER_CREATE_ROOM',
+                mobile: currentUser.mobile,
+                username: currentUser.username,
+                participants: participants
+            });
+        }
+        
+        // Fonction pour envoyer un message
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            if (!message || !currentRoom) return;
+            
+            sendToServer({
+                type: 'USER_MESSAGE',
+                roomId: currentRoom,
+                message: message,
+                username: currentUser.username,
+                mobile: currentUser.mobile
+            });
+            
+            messageInput.value = '';
+            messageInput.focus();
+        }
+        
+        // Fonction pour afficher une notification
+        function showNotification(message, type = 'info') {
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            // Définir la couleur en fonction du type
+            switch (type) {
+                case 'error':
+                    notification.style.backgroundColor = '#f44336';
+                    break;
+                case 'success':
+                    notification.style.backgroundColor = '#4CAF50';
+                    break;
+                case 'info':
+                default:
+                    notification.style.backgroundColor = '#2196F3';
+                    break;
+            }
+            
+            // Masquer après 3 secondes
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Événements
+        connectBtn.addEventListener('click', connectToServer);
+        createRoomBtn.addEventListener('click', createRoom);
+        sendBtn.addEventListener('click', sendMessage);
+        leaveRoomBtn.addEventListener('click', leaveRoom);
+        debugBtn.addEventListener('click', () => {
+            console.log('État actuel:');
+            console.log('Socket:', socket ? ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'][socket.readyState] : 'non initialisé');
+            console.log('Utilisateur:', currentUser);
+            console.log('Salle courante:', currentRoom);
+            
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                // Tester l'envoi d'un message simple
+                sendToServer({
+                    type: 'USER_GET_ROOMS',
+                    mobile: currentUser.mobile || '0000000000'
+                });
+                showNotification('Message de test envoyé', 'info');
+            } else {
+                showNotification('Socket non connecté', 'error');
+            }
+        });
+        
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+        
+        // Demander la liste des salles périodiquement
+        setInterval(() => {
+            if (socket && socket.readyState === WebSocket.OPEN && currentUser.mobile) {
+                sendToServer({
+                    type: 'USER_GET_ROOMS',
+                    mobile: currentUser.mobile
+                });
+            }
+        }, 10000); // Toutes les 10 secondes
+
+        // Ajouter cette fonction complète pour l'ajout de participants
+        function addParticipants() {
+            const newParticipantsText = newParticipantsInput.value.trim();
+            
+            if (!newParticipantsText) {
+                showNotification('Veuillez entrer au moins un numéro mobile', 'error');
+                return;
+            }
+            
+            // Analyser les participants
+            const newParticipants = [];
+            const parts = newParticipantsText.split(',');
+            
+            for (let i = 0; i < parts.length; i++) {
+                const mobile = parts[i].trim();
+                
+                if (!mobile) {
+                    continue;
+                }
+                
+                // Générer un nom par défaut
+                const name = `Utilisateur ${mobile}`;
+                
+                newParticipants.push({
+                    mobile: mobile,
+                    name: name,
+                    urlImage: ''
+                });
+            }
+            
+            if (newParticipants.length === 0) {
+                showNotification('Aucun participant valide', 'error');
+                return;
+            }
+            
+            console.log("Nouveaux participants à ajouter:", newParticipants);
+            
+            sendToServer({
+                type: 'USER_ADD_PARTICIPANTS',
+                roomId: currentRoom,
+                mobile: currentUser.mobile,
+                newParticipants: newParticipants
+            });
+            
+            // Fermer la modal
+            addParticipantsModal.style.display = 'none';
+            newParticipantsInput.value = '';
+            
+            // Ajouter une notification
+            showNotification(`Invitation envoyée à ${newParticipants.length} participant(s)`, 'success');
+        }
+
+        // Ajouter ces gestionnaires d'événements
+        addParticipantsBtn.addEventListener('click', () => {
+            addParticipantsModal.style.display = 'block';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            addParticipantsModal.style.display = 'none';
+        });
+
+        confirmAddParticipantsBtn.addEventListener('click', addParticipants);
+
+        // Fermer la modal si on clique en dehors
+        window.addEventListener('click', (event) => {
+            if (event.target === addParticipantsModal) {
+                addParticipantsModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html> 
