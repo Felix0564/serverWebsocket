@@ -10,6 +10,7 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 8080;
+const  HOST=  process.env.HOST|| '0.0.0.0';
 const protocol= require('./protocol');
 
 app.get('/', (req, res) => {
@@ -81,12 +82,16 @@ class ChatRoom {
   }
   
   // Ajouter un message à l'historique de la room
-  addMessage(username, message) {
+  addMessage(username, message, usermobile) {
     this.chatRoomInfos.historique.total++;
     this.chatRoomInfos.historique.messages.push({
-      participant: username,
-      message: message
+      username: username,
+      mobile: usermobile,
+      message: message,
+      timestamp: new Date().toISOString()
     });
+    // Sauvegarder après chaque message
+    saveRoomsToFile();
   }
 }
 
@@ -289,6 +294,24 @@ wss.on('connection', (ws) => {
             message: `Bienvenue, ${username}!`,
             userId: userId
           })));
+          
+          // Après l'authentification
+          const rebuildRooms = rebuildRoomAccess(userMobile);
+          
+          if (rebuildRooms.length > 0) {
+            // Reconstruire les associations
+            rebuildRooms.forEach(room => {
+              if (!mobileToRooms.has(userMobile)) {
+                mobileToRooms.set(userMobile, new Set());
+              }
+              mobileToRooms.get(userMobile).add(room.keyName);
+            });
+            
+            // Envoyer les salles reconstruites
+            ws.send(JSON.stringify(protocol.createSystemMessage('ROOMS_LIST', {
+              rooms: rebuildRooms
+            })));
+          }
           break;
         
         case protocol.USER.CREATE_ROOM.type:
@@ -359,6 +382,7 @@ wss.on('connection', (ws) => {
               chatRoomInfos: newRoom.chatRoomInfos
             }
           })));
+          saveAllData();
           break;
         
         case protocol.USER.JOIN_ROOM.type:
@@ -630,6 +654,7 @@ wss.on('connection', (ws) => {
             })));
             
             console.log(`${newParticipants.length} participant(s) ajouté(s) à la salle ${roomId}`);
+            saveAllData();
           } catch (error) {
             console.error(`Erreur lors de l'ajout de participants à la salle ${roomId}:`, error);
             ws.send(JSON.stringify(protocol.createSystemMessage('ERROR', {
@@ -729,6 +754,8 @@ function sendRoomMessageHistory(ws, roomId) {
   }
 }
 
+
+
 // Fonction pour générer un ID unique
 function generateUniqueId() {
   return Math.random().toString(36).substring(2, 10);
@@ -795,6 +822,7 @@ function broadcastRoomCreation(room) {
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN) {
       // Chercher les informations du client
+      
       let clientInfo = null;
       
       // Chercher dans toutes les rooms
@@ -825,17 +853,19 @@ function broadcastRoomCreation(room) {
 }
 
 // Démarrer le serveur
-server.listen(PORT, () => {
+server.listen(PORT, HOST, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
 
 // Gestion de la fermeture propre du serveur
 process.on('SIGINT', () => {
   console.log('Arrêt du serveur...');
-  // Sauvegarder les historiques de toutes les rooms
+  saveRoomsToFile();
+  saveMobileToRoomsFile();
   roomMessageHistories.forEach((history, roomId) => {
     saveRoomMessageHistory(roomId, history);
   });
+  console.log('Données sauvegardées avec succès');
   process.exit(0);
 });
 
@@ -843,3 +873,201 @@ module.exports = { ChatRoom, Participant };
 
 // Servir les fichiers statiques
 app.use(express.static('public'));
+
+function saveMobileToRoomsFile() {
+  try {
+    const mobileRoomsData = Array.from(mobileToRooms.entries()).map(([mobile, roomSet]) => ({
+      mobile,
+      rooms: Array.from(roomSet)
+    }));
+    
+    const filePath = path.join(__dirname, 'mobile_rooms.json');
+    fs.writeFileSync(filePath, JSON.stringify(mobileRoomsData, null, 2));
+    console.log(`Sauvegarde des associations pour ${mobileRoomsData.length} mobiles`);
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde des associations:', error);
+  }
+}
+
+function loadRoomsFromFile() {
+  try {
+    const filePath = path.join(__dirname, 'rooms_data.json');
+    if (!fs.existsSync(filePath)) {
+      console.log('Fichier rooms_data.json non trouvé');
+      return;
+    }
+
+    const roomsData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    console.log(`Chargement de ${Object.keys(roomsData).length} salles`);
+
+    // Vider les maps existantes
+    roomsByKeyName.clear();
+    mobileToRooms.clear();
+
+    Object.entries(roomsData).forEach(([roomId, roomData]) => {
+      try {
+        // Recréer correctement les participants
+        const participants = roomData.participantsInfos.map(p => {
+          const participant = new Participant(
+            p.id || generateUserId(),
+            p.name,
+            p.mobile,
+            p.urlImage
+          );
+          return participant;
+        });
+
+        const room = new ChatRoom(roomData.keyName, participants);
+        
+        // Restaurer toutes les propriétés
+        Object.assign(room, {
+          label: roomData.label || '',
+          description: roomData.description || '',
+          urlImage: roomData.urlImage || '',
+          dateOpen: new Date(roomData.dateOpen),
+          dateClose: roomData.dateClose ? new Date(roomData.dateClose) : null,
+          chatRoomInfos: {
+            ...roomData.chatRoomInfos,
+            socketServerUrl: `ws://${process.env.HOST || 'localhost'}:${PORT}`
+          }
+        });
+
+        roomsByKeyName.set(roomId, room);
+        
+        // Reconstruire les associations
+        participants.forEach(p => {
+          if (!mobileToRooms.has(p.mobile)) {
+            mobileToRooms.set(p.mobile, new Set());
+          }
+          mobileToRooms.get(p.mobile).add(roomId);
+        });
+      } catch (error) {
+        console.error(`Erreur lors du chargement de la salle ${roomId}:`, error);
+      }
+    });
+
+    console.log(`${roomsByKeyName.size} salles chargées avec succès`);
+    console.log(`${mobileToRooms.size} associations mobile-rooms reconstruites`);
+  } catch (error) {
+    console.error('Erreur lors du chargement des salles:', error);
+  }
+}
+
+// le chargement des associations mobile-rooms
+function loadMobileToRoomsFile() {
+  try {
+    const filePath = path.join(__dirname, 'mobile_rooms.json');
+    
+    if (!fs.existsSync(filePath)) {
+      console.log('Fichier mobile_rooms.json non trouvé');
+      return;
+    }
+
+    const mobileRoomsData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    
+    console.log(`Chargement des associations pour ${mobileRoomsData.length} mobiles`);
+
+    mobileRoomsData.forEach(entry => {
+      mobileToRooms.set(entry.mobile, new Set(entry.rooms));
+    });
+
+    console.log(`Associations chargées: ${mobileToRooms.size}`);
+  } catch (error) {
+    console.error('Erreur lors du chargement des associations:', error);
+  }
+}
+
+// Modifiez l'appel au démarrage
+function initializeServer() {
+  loadRoomsFromFile();
+  loadMobileToRoomsFile();
+  console.log('Serveur initialisé avec succès');
+}
+
+// Appelez initializeServer() au démarrage du serveur
+initializeServer();
+
+function rebuildRoomAccess(mobile) {
+  const userRooms = [];
+  
+  console.log(`Reconstruction des accès pour le mobile ${mobile}`);
+  console.log(`Nombre total de salles: ${roomsByKeyName.size}`);
+  
+  roomsByKeyName.forEach((room, roomId) => {
+    console.log(`Vérification de la salle ${roomId}`);
+    console.log(`Participants de la salle: ${room.participantsInfos.map(p => p.mobile).join(', ')}`);
+    
+    if (room.hasAccess(mobile)) {
+      console.log(`Salle ${roomId} accessible pour ${mobile}`);
+      userRooms.push(room);
+    }
+  });
+  
+  console.log(`Salles reconstruites pour ${mobile}: ${userRooms.length}`);
+  return userRooms;
+}
+
+// Fonction pour sauvegarder les rooms
+function saveRoomsToFile() {
+  try {
+    const roomsData = {};
+    roomsByKeyName.forEach((room, roomId) => {
+      roomsData[roomId] = {
+        keyName: room.keyName,
+        label: room.label,
+        description: room.description,
+        urlImage: room.urlImage,
+        participantsCount: room.participantsCount,
+        participantsInfos: room.participantsInfos.map(p => ({
+          id: p.id,
+          name: p.name,
+          mobile: p.mobile,
+          urlImage: p.urlImage
+        })),
+        dateOpen: room.dateOpen,
+        dateClose: room.dateClose,
+        chatRoomInfos: room.chatRoomInfos
+      };
+    });
+
+    const filePath = path.join(__dirname, 'rooms_data.json');
+    fs.writeFileSync(filePath, JSON.stringify(roomsData, null, 2));
+    console.log(`Sauvegarde de ${Object.keys(roomsData).length} salles effectuée`);
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde des salles:', error);
+  }
+}
+
+// Sauvegarde périodique
+const SAVE_INTERVAL = 30 * 1000; // 30 secondes
+setInterval(() => {
+  console.log('Sauvegarde périodique des données...');
+  saveRoomsToFile();
+  saveMobileToRoomsFile();
+}, SAVE_INTERVAL);
+
+// Ajout d'une fonction de sauvegarde complète
+function saveAllData() {
+  try {
+    saveRoomsToFile();
+    saveMobileToRoomsFile();
+    roomMessageHistories.forEach((history, roomId) => {
+      saveRoomMessageHistory(roomId, history);
+    });
+    console.log('Toutes les données ont été sauvegardées avec succès');
+  } catch (error) {
+    console.error('Erreur lors de la sauvegarde complète:', error);
+  }
+}
+
+// Modification du gestionnaire SIGINT
+process.on('SIGINT', () => {
+  console.log('Arrêt du serveur...');
+  saveRoomsToFile();
+  saveMobileToRoomsFile();
+  roomMessageHistories.forEach((history, roomId) => {
+    saveRoomMessageHistory(roomId, history);
+  });
+  console.log('Données sauvegardées avec succès');
+  process.exit(0);
+});

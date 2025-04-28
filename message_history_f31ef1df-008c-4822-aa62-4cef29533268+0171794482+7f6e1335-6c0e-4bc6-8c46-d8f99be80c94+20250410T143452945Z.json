@@ -1,0 +1,23 @@
+[
+  {
+    "type": "system",
+    "roomId": "f31ef1df-008c-4822-aa62-4cef29533268+0171794482+7f6e1335-6c0e-4bc6-8c46-d8f99be80c94+20250410T143452945Z",
+    "username": "Système",
+    "message": "Jessica  a rejoint le chat",
+    "timestamp": "2025-04-10T18:33:31.549Z"
+  },
+  {
+    "type": "system",
+    "roomId": "f31ef1df-008c-4822-aa62-4cef29533268+0171794482+7f6e1335-6c0e-4bc6-8c46-d8f99be80c94+20250410T143452945Z",
+    "username": "Système",
+    "message": "Jessica  a rejoint le chat",
+    "timestamp": "2025-04-10T18:33:31.905Z"
+  },
+  {
+    "type": "system",
+    "roomId": "f31ef1df-008c-4822-aa62-4cef29533268+0171794482+7f6e1335-6c0e-4bc6-8c46-d8f99be80c94+20250410T143452945Z",
+    "username": "Système",
+    "message": "Jessica  a quitté le chat",
+    "timestamp": "2025-04-10T18:37:11.333Z"
+  }
+]

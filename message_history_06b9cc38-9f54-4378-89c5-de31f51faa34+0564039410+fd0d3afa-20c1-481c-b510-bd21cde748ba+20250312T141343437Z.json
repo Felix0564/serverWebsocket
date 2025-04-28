@@ -1,0 +1,16 @@
+[
+  {
+    "type": "system",
+    "roomId": "06b9cc38-9f54-4378-89c5-de31f51faa34+0564039410+fd0d3afa-20c1-481c-b510-bd21cde748ba+20250312T141343437Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-03-12T14:14:10.147Z"
+  },
+  {
+    "type": "system",
+    "roomId": "06b9cc38-9f54-4378-89c5-de31f51faa34+0564039410+fd0d3afa-20c1-481c-b510-bd21cde748ba+20250312T141343437Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-03-12T14:15:39.861Z"
+  }
+]

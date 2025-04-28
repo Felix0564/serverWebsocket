@@ -1,0 +1,58 @@
+[
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-04-10T16:24:20.156Z"
+  },
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-04-10T16:24:20.461Z"
+  },
+  {
+    "type": "message",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "felix",
+    "message": "coucou les amis ",
+    "timestamp": "2025-04-10T16:24:31.874423"
+  },
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a ajouté 1 participant(s) à la salle",
+    "timestamp": "2025-04-10T16:25:39.409Z"
+  },
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-04-10T16:35:23.530Z"
+  },
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a quitté le chat",
+    "timestamp": "2025-04-10T16:35:23.543Z"
+  },
+  {
+    "type": "system",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "Système",
+    "message": "felix a rejoint le chat",
+    "timestamp": "2025-04-10T16:35:23.935Z"
+  },
+  {
+    "type": "message",
+    "roomId": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "username": "felix",
+    "message": "oui",
+    "timestamp": "2025-04-10T16:34:46.702448"
+  }
+]

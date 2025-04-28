@@ -222,7 +222,7 @@
         </div>
     </div>
     
-    <!-- Ajouter la modal pour l'ajout de participants -->
+    <!-- la modal pour l'ajout de participants -->
     <div id="addParticipantsModal" class="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
         <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px;">
             <span class="close" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
@@ -244,11 +244,11 @@
         let currentUser = {
             mobile: null,
             username: null,
-            userId: null  // Sera défini par le serveur
+            userId: null  
         };
         let currentRoom = null;
         
-        // Éléments DOM
+        
         const connectBtn = document.getElementById('connectBtn');
         const createRoomBtn = document.getElementById('createRoomBtn');
         const sendBtn = document.getElementById('sendBtn');

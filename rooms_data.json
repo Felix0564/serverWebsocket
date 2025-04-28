@@ -1,0 +1,589 @@
+{
+  "9d989874-2ec4-48a3-9ec7-45067ff2624a+0564039410+613d5ce9-aa95-490b-ac22-d2bf6fa737c7+20250312T170211911Z": {
+    "keyName": "9d989874-2ec4-48a3-9ec7-45067ff2624a+0564039410+613d5ce9-aa95-490b-ac22-d2bf6fa737c7+20250312T170211911Z",
+    "label": "Abiola GAV CI+felix+Abena💕+Ablo+Abochi+Agbedje Org+Aïcha Voisine+Aka Marius+AideRedaction+Alouh",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 10,
+    "participantsInfos": [
+      {
+        "id": "38208ae4-b1f2-40c8-b0d0-63826b333738",
+        "name": "Abiola GAV CI",
+        "mobile": "0141870579"
+      },
+      {
+        "id": "ee40462c-042d-4a57-995d-56c96600a14c",
+        "name": "felix",
+        "mobile": "0564039410"
+      },
+      {
+        "id": "a27358f2-36f7-42d0-af0b-c62414d5c187",
+        "name": "Abena💕",
+        "mobile": "+233532643146",
+        "urlImage": ""
+      },
+      {
+        "id": "852a5af6-8ad3-41a5-b036-d0f3291b3c9e",
+        "name": "Ablo",
+        "mobile": "0505725035",
+        "urlImage": ""
+      },
+      {
+        "id": "edc92eb0-37ba-42fe-8a9f-dc0a6fe7573d",
+        "name": "Abochi",
+        "mobile": "0554152976",
+        "urlImage": ""
+      },
+      {
+        "id": "2d8715e5-488f-45a0-9041-1f66ee7f6b72",
+        "name": "Agbedje Org",
+        "mobile": "0702747227",
+        "urlImage": ""
+      },
+      {
+        "id": "35849a1a-b222-484f-bab1-bf6c384c6a1c",
+        "name": "Aïcha Voisine",
+        "mobile": "0501369599",
+        "urlImage": ""
+      },
+      {
+        "id": "092a305e-c779-4e7a-a3c4-76682d3e760b",
+        "name": "Aka Marius",
+        "mobile": "0710095754",
+        "urlImage": ""
+      },
+      {
+        "id": "0c8045c7-1260-4b41-9b73-904a3f77ed2b",
+        "name": "AideRedaction",
+        "mobile": "0777105200",
+        "urlImage": ""
+      },
+      {
+        "id": "6840a732-fc43-4b25-922e-75aeda360687",
+        "name": "Alouh",
+        "mobile": "0576471256",
+        "urlImage": ""
+      }
+    ],
+    "dateOpen": "2025-03-12T17:02:11.911Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 5,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-03-26T19:16:07.140Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-03-27T10:46:21.767Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-03-27T10:50:55.953Z"
+          },
+          {
+            "username": "felix",
+            "message": "envoyer ",
+            "timestamp": "2025-03-27T11:27:58.338Z"
+          },
+          {
+            "username": "felix",
+            "message": "Ok 👌",
+            "timestamp": "2025-03-27T12:15:15.449Z"
+          }
+        ]
+      }
+    }
+  },
+  "50c65c92-c711-4f5b-9bc6-c6517562411a+0564039410+9744af55-3743-4004-9b75-f79939a7b7b5+20250327T121801855Z": {
+    "keyName": "50c65c92-c711-4f5b-9bc6-c6517562411a+0564039410+9744af55-3743-4004-9b75-f79939a7b7b5+20250327T121801855Z",
+    "label": "Angenor Gav+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 2,
+    "participantsInfos": [
+      {
+        "id": "c3c7873e-c795-482f-895a-360b1f4bfb5f",
+        "name": "Angenor Gav",
+        "mobile": "0769142393"
+      },
+      {
+        "id": "1e3c456b-f808-4e8c-b122-156a413ada79",
+        "name": "felix",
+        "mobile": "0564039410"
+      }
+    ],
+    "dateOpen": "2025-03-27T12:18:01.855Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 1,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "c'est comment ",
+            "timestamp": "2025-03-27T12:18:34.694Z"
+          }
+        ]
+      }
+    }
+  },
+  "c9817fd1-5819-4032-96a7-7bff16576ce2+0564039410+5342f469-67c9-4307-90b0-92a5b935a523+20250327T123757953Z": {
+    "keyName": "c9817fd1-5819-4032-96a7-7bff16576ce2+0564039410+5342f469-67c9-4307-90b0-92a5b935a523+20250327T123757953Z",
+    "label": "Akoua+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 2,
+    "participantsInfos": [
+      {
+        "id": "6326a863-1f74-4543-8823-ba462b3364cb",
+        "name": "Akoua",
+        "mobile": "0747458764"
+      },
+      {
+        "id": "61461ce5-2687-49be-832d-f3dcc2d48426",
+        "name": "felix",
+        "mobile": "0564039410"
+      }
+    ],
+    "dateOpen": "2025-03-27T12:37:57.953Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 4,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "felix",
+            "timestamp": "2025-03-27T12:38:16.263Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-04-07T08:52:29.949Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-04-07T08:52:30.448Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-04-07T08:52:31.295Z"
+          }
+        ]
+      }
+    }
+  },
+  "4c7aa380-c3eb-47c3-b4cf-a284d5deaff2+0564039410+3d882c3c-e07c-4ed9-8e5a-2852f5ce2bec+20250327T130123461Z": {
+    "keyName": "4c7aa380-c3eb-47c3-b4cf-a284d5deaff2+0564039410+3d882c3c-e07c-4ed9-8e5a-2852f5ce2bec+20250327T130123461Z",
+    "label": "Allade MTN+felix+Aimé+AMENA UPB",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 4,
+    "participantsInfos": [
+      {
+        "id": "cae8a3e6-84e3-47d4-ba34-ebc33b825787",
+        "name": "Allade MTN",
+        "mobile": "0574722768"
+      },
+      {
+        "id": "dc80803a-74f3-4ddd-a905-4ac274297c10",
+        "name": "felix",
+        "mobile": "0564039410"
+      },
+      {
+        "id": "9615632e-18e8-460c-81b6-13090c66cae9",
+        "name": "Aimé",
+        "mobile": "0716723199",
+        "urlImage": ""
+      },
+      {
+        "id": "08527aa4-1496-4cd2-964a-2671b61e149a",
+        "name": "AMENA UPB",
+        "mobile": "0777147066",
+        "urlImage": ""
+      }
+    ],
+    "dateOpen": "2025-03-27T13:01:23.462Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 1,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-03-27T18:58:24.554Z"
+          }
+        ]
+      }
+    }
+  },
+  "77323298-db28-465e-a1fc-e5e9a68d8260+0564039410+0cdacd4c-222b-42d4-8d1a-533cc127fac0+20250327T190259528Z": {
+    "keyName": "77323298-db28-465e-a1fc-e5e9a68d8260+0564039410+0cdacd4c-222b-42d4-8d1a-533cc127fac0+20250327T190259528Z",
+    "label": "Ablo+Abochi+felix+Abedje Petit",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 4,
+    "participantsInfos": [
+      {
+        "id": "2042cb7d-e064-46b5-8c4b-4661ab009216",
+        "name": "Ablo",
+        "mobile": "0505725035"
+      },
+      {
+        "id": "3e0a881b-2566-4a28-b34e-6e22f0b0c187",
+        "name": "Abochi",
+        "mobile": "0554152976"
+      },
+      {
+        "id": "6ecec385-5984-4dc8-a064-bbe6d4f0e377",
+        "name": "felix",
+        "mobile": "0564039410"
+      },
+      {
+        "id": "e0c726fd-27a6-4981-9d75-73dd864c23a2",
+        "name": "Abedje Petit",
+        "mobile": "0789734945",
+        "urlImage": ""
+      }
+    ],
+    "dateOpen": "2025-03-27T19:02:59.528Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 12,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:48:28.224Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:48:37.295Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:48:47.593Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut\n",
+            "timestamp": "2025-04-07T08:49:33.523Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut\n",
+            "timestamp": "2025-04-07T08:49:35.809Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut\n",
+            "timestamp": "2025-04-07T08:49:36.049Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:40.520Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:41.472Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:41.682Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:44.915Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:47.946Z"
+          },
+          {
+            "username": "felix",
+            "message": "salut",
+            "timestamp": "2025-04-07T08:49:48.891Z"
+          }
+        ]
+      }
+    }
+  },
+  "8ad82af7-69ec-4890-ad03-a18aa11296ff+0564039410+f1dfe868-7e4b-46b8-9f9f-e046088d1a2e+20250407T085110868Z": {
+    "keyName": "8ad82af7-69ec-4890-ad03-a18aa11296ff+0564039410+f1dfe868-7e4b-46b8-9f9f-e046088d1a2e+20250407T085110868Z",
+    "label": "Agbedje Org+felix+Adjara",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 3,
+    "participantsInfos": [
+      {
+        "id": "9eca4771-d8e7-4714-a1f0-8f05c7b8f674",
+        "name": "Agbedje Org",
+        "mobile": "0702747227"
+      },
+      {
+        "id": "c5349292-6904-4d6b-96e4-80bd861c0dfc",
+        "name": "felix",
+        "mobile": "0564039410"
+      },
+      {
+        "id": "3619058b-a524-425a-b159-60912c48a329",
+        "name": "Adjara",
+        "mobile": "+2250151778121",
+        "urlImage": ""
+      }
+    ],
+    "dateOpen": "2025-04-07T08:51:10.868Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 2,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "salut ",
+            "timestamp": "2025-04-07T08:55:46.358Z"
+          },
+          {
+            "username": "felix",
+            "message": "hello",
+            "timestamp": "2025-04-07T15:21:19.260Z"
+          }
+        ]
+      }
+    }
+  },
+  "56fb4cec-03ad-468a-baff-bdd885c4321e+0564039410+236d7dd8-51ff-4dd4-9186-eecebf2869b0+20250407T152136656Z": {
+    "keyName": "56fb4cec-03ad-468a-baff-bdd885c4321e+0564039410+236d7dd8-51ff-4dd4-9186-eecebf2869b0+20250407T152136656Z",
+    "label": "Abena💕+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 2,
+    "participantsInfos": [
+      {
+        "id": "80ff364c-1503-4300-9e4d-dba368733d78",
+        "name": "Abena💕",
+        "mobile": "+233532643146"
+      },
+      {
+        "id": "2feb16c9-19f9-41df-ba9e-50305dd9ddb4",
+        "name": "felix",
+        "mobile": "0564039410"
+      }
+    ],
+    "dateOpen": "2025-04-07T15:21:36.656Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 1,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "hello",
+            "timestamp": "2025-04-07T15:22:26.833Z"
+          }
+        ]
+      }
+    }
+  },
+  "f31ef1df-008c-4822-aa62-4cef29533268+0171794482+7f6e1335-6c0e-4bc6-8c46-d8f99be80c94+20250410T143452945Z": {
+    "keyName": "f31ef1df-008c-4822-aa62-4cef29533268+0171794482+7f6e1335-6c0e-4bc6-8c46-d8f99be80c94+20250410T143452945Z",
+    "label": "Abedje Petit+Abedje Petit+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 3,
+    "participantsInfos": [
+      {
+        "id": "99f70805-9152-45fa-a176-5c463ef39579",
+        "name": "Abedje Petit",
+        "mobile": "0789734945"
+      },
+      {
+        "id": "86256ee6-283a-40b2-b926-c4c935cc1b7b",
+        "name": "Abedje Petit",
+        "mobile": "0789734965"
+      },
+      {
+        "id": "c840bf12-89a5-40b6-a55f-f782a4ff3a6a",
+        "name": "felix",
+        "mobile": "0171794482"
+      }
+    ],
+    "dateOpen": "2025-04-10T14:34:52.945Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 0,
+        "messages": []
+      }
+    }
+  },
+  "d17480c7-a1b5-4816-b155-8f7d0ec4fbd9+0171794482+5b0eb44c-14c4-4fd5-9dbb-9f1214b4ca83+20250410T143639732Z": {
+    "keyName": "d17480c7-a1b5-4816-b155-8f7d0ec4fbd9+0171794482+5b0eb44c-14c4-4fd5-9dbb-9f1214b4ca83+20250410T143639732Z",
+    "label": "Ablo+Abochi+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 3,
+    "participantsInfos": [
+      {
+        "id": "cc75de31-de5e-473a-ad46-599db06c9f5e",
+        "name": "Ablo",
+        "mobile": "0505725035"
+      },
+      {
+        "id": "1c3538aa-38c6-4d57-aefc-f4937521af34",
+        "name": "Abochi",
+        "mobile": "0554152976"
+      },
+      {
+        "id": "c6e1cdef-cf2e-4d72-9bed-dedbba07b95c",
+        "name": "felix",
+        "mobile": "0171794482"
+      }
+    ],
+    "dateOpen": "2025-04-10T14:36:39.732Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 0,
+        "messages": []
+      }
+    }
+  },
+  "2f642295-09f6-4280-9956-bdaaaadafdb7+0171794482+32a20e0b-44ac-4caf-954e-93842dfdd999+20250410T152306062Z": {
+    "keyName": "2f642295-09f6-4280-9956-bdaaaadafdb7+0171794482+32a20e0b-44ac-4caf-954e-93842dfdd999+20250410T152306062Z",
+    "label": "Adoni Pierrette+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 2,
+    "participantsInfos": [
+      {
+        "id": "e80856ca-ba5d-4381-b9aa-4252c7bf98e8",
+        "name": "Adoni Pierrette",
+        "mobile": "0787121307"
+      },
+      {
+        "id": "d31db2a7-2122-462f-ab0c-bd3721b1fe1b",
+        "name": "felix",
+        "mobile": "0171794482"
+      }
+    ],
+    "dateOpen": "2025-04-10T15:23:06.062Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 0,
+        "messages": []
+      }
+    }
+  },
+  "ab3c0bda-ca65-483b-8dde-18b708a02163+0171794482+ae7e18fb-2360-49ed-907e-7ae4d603e800+20250410T154554977Z": {
+    "keyName": "ab3c0bda-ca65-483b-8dde-18b708a02163+0171794482+ae7e18fb-2360-49ed-907e-7ae4d603e800+20250410T154554977Z",
+    "label": "Aimé Associé+felix",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 2,
+    "participantsInfos": [
+      {
+        "id": "3fd3433c-c02e-42e7-8866-088d30cc29a6",
+        "name": "Aimé Associé",
+        "mobile": "0555910728"
+      },
+      {
+        "id": "926fac0c-7ed7-495e-93e3-a27ec10af3e7",
+        "name": "felix",
+        "mobile": "0171794482"
+      }
+    ],
+    "dateOpen": "2025-04-10T15:45:54.977Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 0,
+        "messages": []
+      }
+    }
+  },
+  "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z": {
+    "keyName": "b4e6cb29-868a-472e-88fd-764275b822d2+0171794482+79785dac-ae63-44ea-ac98-37a282792a74+20250410T162403960Z",
+    "label": "Cachet+Clarisse Ménage+Cvms+felix+Akoua",
+    "description": "",
+    "urlImage": "",
+    "participantsCount": 5,
+    "participantsInfos": [
+      {
+        "id": "80d8e1cc-6ccb-425f-a341-5cbf802a6678",
+        "name": "Cachet",
+        "mobile": "0708400158"
+      },
+      {
+        "id": "2d55b35b-d23c-49b5-ae99-77c886f65ada",
+        "name": "Clarisse Ménage",
+        "mobile": "0757035801"
+      },
+      {
+        "id": "9f17b6ad-0011-4c0a-82fd-b0f79d843d47",
+        "name": "Cvms",
+        "mobile": "+22509752303"
+      },
+      {
+        "id": "8e7c51b9-c317-400c-80aa-a62b1a314478",
+        "name": "felix",
+        "mobile": "0171794482"
+      },
+      {
+        "id": "c8469e11-4cc1-4ee7-8a5f-ff7826541438",
+        "name": "Akoua",
+        "mobile": "0747458764",
+        "urlImage": ""
+      }
+    ],
+    "dateOpen": "2025-04-10T16:24:03.960Z",
+    "dateClose": null,
+    "chatRoomInfos": {
+      "socketServerUrl": "ws://localhost:8080",
+      "historique": {
+        "total": 2,
+        "messages": [
+          {
+            "username": "felix",
+            "message": "coucou les amis ",
+            "timestamp": "2025-04-10T16:24:31.086Z"
+          },
+          {
+            "username": "felix",
+            "message": "oui",
+            "timestamp": "2025-04-10T16:35:23.963Z"
+          }
+        ]
+      }
+    }
+  }
+}
